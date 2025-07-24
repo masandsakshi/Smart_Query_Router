@@ -1,8 +1,4 @@
-# 🚀 SmartQueryRouter: An Adaptive, Resource-Aware Database Proxy
-
-[![Go Version](https://img.shields.io/badge/go-1.19+-blue.svg)](https://golang.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+# SmartQueryRouter: An Adaptive, Resource-Aware Database Proxy
 
 SmartQueryRouter is a standalone, intelligent middleware layer built in Go. It acts as a smart proxy for distributed databases, routing queries to the best-performing backend node based on a combination of real-time health checks, historical performance data, and a latency-driven feedback loop.
 
