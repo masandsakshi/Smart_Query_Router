@@ -1,93 +1,52 @@
-# SmartQueryRouter
+# 🚀 SmartQueryRouter: An Adaptive, Resource-Aware Database Proxy
 
-SmartQueryRouter is a modular, plug-and-play proxy layer designed to intelligently route queries across distributed databases. By leveraging real-time system metrics and feedback, it optimizes performance and resilience, making it suitable for various database systems such as MongoDB, Couchbase, Cassandra, and PostgreSQL.
+[![Go Version](https://img.shields.io/badge/go-1.19+-blue.svg)](https://golang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 
-## Table of Contents
+SmartQueryRouter is a standalone, intelligent middleware layer built in Go. It acts as a smart proxy for distributed databases, routing queries to the best-performing backend node based on a combination of real-time health checks, historical performance data, and a latency-driven feedback loop.
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
+---
 
-## Overview
+### 🤔 The Problem
+In a distributed database cluster, simply distributing load via round-robin is not enough. Nodes can become slow or unresponsive due to high CPU load, disk I/O bottlenecks, or network issues. A traditional proxy is blind to this degradation, continuing to send queries to failing nodes, which results in high latency and errors for the client.
 
-SmartQueryRouter aims to provide a database-agnostic routing layer that adapts to the current state of the system. It combines system metrics, historical query performance, and adaptive logic to ensure efficient query routing.
+### 💡 The Solution: SmartQueryRouter
+SmartQueryRouter solves this by being **resource-aware and adaptive**. It constantly monitors the state of the cluster and uses that data to make intelligent routing decisions, ensuring queries are always sent to the healthiest and fastest available node.
 
-## Features
+---
 
-- **Database-Agnostic**: Supports multiple backend databases.
-- **Real-Time Metrics**: Integrates with Prometheus for real-time monitoring.
-- **Adaptive Routing**: Uses a scoring function to determine the best node for query execution.
-- **Pluggable Backends**: Easily extendable to support additional databases.
-- **Configurable Policies**: Allows customization of routing strategies and weights.
+### ✨ Key Features (Current Implementation)
 
-## Architecture
+*   **High-Performance Go Proxy:** A lightweight, concurrent core engine that adds minimal overhead to requests.
+*   **Real-Time Health Checking:** Actively monitors all backend nodes via periodic TCP probes. Unhealthy nodes are automatically and temporarily removed from the routing pool.
+*   **Adaptive Latency-Based Routing:** Moves beyond simple round-robin. It measures the latency of every query and maintains a moving average for each node. New requests are always sent to the healthy node with the lowest historical latency.
+*   **Resilient Failover & Retry:** If a query to a chosen node fails unexpectedly, the proxy automatically retries the request on the next-best candidate, ensuring high availability.
+*   **Full Observability Stack:** Exposes detailed performance metrics (node health, latency histograms, proxied request counts) via a `/metrics` endpoint, ready to be scraped by **Prometheus** and visualized in **Grafana**.
 
-The architecture consists of several key components:
+---
 
-- **Query Proxy Layer**: The main entry point for client queries.
-- **Metrics Collector**: Gathers system metrics from backend nodes.
-- **Routing Engine**: Determines the optimal node for query execution based on metrics and historical data.
-- **Backend Adapters**: Interfaces for interacting with different database systems.
+### 🗺️ Roadmap: Future Work
 
-## Getting Started
+1.  **🧠 Predictive Routing with Machine Learning:**
+    *   Implement a new, pluggable routing policy that uses a simple ML model (e.g., time-series forecasting) to *predict* node latency based on recent trends. This will allow the router to be proactive, avoiding nodes *before* they become critically slow.
 
-To get started with SmartQueryRouter, follow these steps:
+2.  **🔌 Pluggable Database Adapters:**
+    *   Build out the `adapters` for real-world databases like PostgreSQL and MongoDB that use binary TCP protocols instead of HTTP. This will make the router truly database-agnostic.
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/smart-query-router.git
-   cd smart-query-router
-   ```
+3.  **🐳 Full Dockerization:**
+    *   Create a complete `docker-compose.yaml` file to run the entire stack (Router, Prometheus, Grafana, and mock backends) with a single `docker-compose up` command, making setup and testing effortless.
 
-2. Install dependencies:
-   ```
-   go mod tidy
-   ```
+---
 
-3. Configure the application by editing `config/config.yaml`.
+### 🛠️ Technology Stack
+*   **Core:** Go (Golang)
+*   **Observability:** Prometheus, Grafana
+*   **Configuration:** YAML
+*   **Protocols:** HTTP, TCP/IP
+*   **Logging:** Zap (Structured Logging)
 
-4. Run the application:
-   ```
-   go run cmd/main.go
-   ```
+---
 
-## Usage
-
-Once the application is running, you can send queries to the proxy server. The proxy will route the queries to the appropriate backend node based on the current system metrics and historical performance.
-
-## Configuration
-
-The configuration file `config/config.yaml` allows you to set various parameters, including:
-
-- Weights for the scoring function
-- Routing strategies
-
-Example configuration:
-```yaml
-weights:
-  cpu: 0.5
-  latency: 0.3
-  memory: 0.2
-strategy: "least_score"
-```
-
-## Testing
-
-Integration tests are located in the `tests/integration` directory. To run the tests, use the following command:
-```
-go test ./tests/integration
-```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for more details.
+### 🤝 Contributing
+This is a personal learning project, but contributions, ideas, and feedback are welcome. Please feel free to open an issue or submit a pull request.
